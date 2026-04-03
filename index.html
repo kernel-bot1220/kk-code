@@ -1689,6 +1689,7 @@
 
         // ==================== 学习功能 ====================
         let currentRoot = null;
+        let currentRootKey = null;
         let currentCategory = null;
 
         function renderRootChips() {
@@ -1707,6 +1708,7 @@
 
         function selectRoot(rootKey) {
             currentRoot = wordRoots[rootKey];
+            currentRootKey = rootKey;
             if (!currentRoot) return;
 
             // 更新芯片状态
@@ -1816,14 +1818,14 @@
 
             const learnedWords = getLearnedWords();
             currentRoot.words.forEach(word => {
-                const key = `${Object.keys(wordRoots).find(k => wordRoots[k] === currentRoot)}:${word.word}`;
+                const key = `${currentRootKey}:${word.word}`;
                 if (!learnedWords.includes(key)) {
                     learnedWords.push(key);
                 }
             });
 
             saveLearnedWords(learnedWords);
-            renderWordCards(Object.keys(wordRoots).find(k => wordRoots[k] === currentRoot));
+            renderWordCards(currentRootKey);
             updateStats();
             showToast('恭喜！全部单词已标记为学会', 'success');
         }
@@ -1868,7 +1870,7 @@
         function startQuizFromRoot() {
             if (!currentRoot) return;
 
-            const rootKey = Object.keys(wordRoots).find(k => wordRoots[k] === currentRoot);
+            const rootKey = currentRootKey;
             const questions = generateQuizQuestions('specific', 10, 'mixed', rootKey);
 
             quizData = {
